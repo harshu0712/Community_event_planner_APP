@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Event Planner</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<script>
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCN-8jCjBe_zvQw4NbueBdvnmO0Lq-sNa4",
+  authDomain: "community-event-planner-8b02d.firebaseapp.com",
+  databaseURL: "https://community-event-planner-8b02d-default-rtdb.firebaseio.com",
+  projectId: "community-event-planner-8b02d",
+  storageBucket: "community-event-planner-8b02d.firebasestorage.app",
+  messagingSenderId: "956338363796",
+  appId: "1:956338363796:web:5815aac0f70e137e7fc381",
+  measurementId: "G-K8MZHPR3SC"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+
+</head>
+
+<body>
+
+<!-- Auth Check -->
+<script>
+const sessionData = localStorage.getItem('event_planner_session');
+
+if (!sessionData) {
+window.location.href = 'login.html';
+}
+else {
+
+const session = JSON.parse(sessionData);
+
+localStorage.setItem('currentUser', session.id);
+
+document.addEventListener('DOMContentLoaded', () => {
+
+const userAvatar = document.getElementById('userAvatar');
+const userName = document.getElementById('userName');
+
+if (userName) userName.textContent = session.name;
+
+if (userAvatar && session.avatar) {
+
+userAvatar.textContent = session.avatar.initial;
+userAvatar.style.backgroundColor = session.avatar.color;
+
+}
+
+});
+
+}
+</script>
+
+<div class="container">
+
+<header class="header">
+
+<h1>Community Event Planner</h1>
+
+<p>Discover, Create, and Join Amazing Events</p>
+
+<div class="user-controls">
+
+<div class="user-profile">
+<div id="userAvatar"></div>
+<span id="userName"></span>
+</div>
+
+<button class="btn btn-danger" onclick="handleLogout()">Logout</button>
+
+<button class="btn btn-primary" id="createEventBtn">+ Create Event</button>
+
+</div>
+
+</header>
+
+<!-- Search -->
+
+<div class="controls">
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="🔍 Search events">
+</div>
+
+<div class="filter-group">
+
+<select id="categoryFilter">
+<option value="all">All Categories</option>
+<option value="social">Social</option>
+<option value="professional">Professional</option>
+<option value="sports">Sports</option>
+<option value="arts">Arts</option>
+<option value="education">Education</option>
+<option value="other">Other</option>
+</select>
+
+<select id="dateFilter">
+<option value="all">All Dates</option>
+<option value="upcoming">Upcoming</option>
+<option value="thisWeek">This Week</option>
+<option value="thisMonth">This Month</option>
+</select>
+
+</div>
+
+</div>
+
+<!-- Events Grid -->
+
+<div id="eventsGrid" class="events-grid"></div>
+
+<div id="emptyState" class="empty-state hidden">
+<h3>No Events Found</h3>
+<p>Create a new event to get started.</p>
+</div>
+
+</div>
+
+<!-- Create Event Modal -->
+
+<div id="eventModal" class="modal">
+
+<div class="modal-content">
+
+<div class="modal-header">
+<h2>Create Event</h2>
+<button class="close-btn" id="closeEventModal">&times;</button>
+</div>
+
+<form id="eventForm">
+
+<input type="hidden" id="eventId">
+
+<div class="form-group">
+<input type="text" id="eventTitle" placeholder="Event Title" required>
+</div>
+
+<div class="form-group">
+<select id="eventCategory">
+<option value="social">Social</option>
+<option value="professional">Professional</option>
+<option value="sports">Sports</option>
+<option value="arts">Arts</option>
+<option value="education">Education</option>
+<option value="other">Other</option>
+</select>
+</div>
+
+<div class="form-group">
+<input type="date" id="eventDate" required>
+</div>
+
+<div class="form-group">
+<input type="time" id="eventTime" required>
+</div>
+
+<div class="form-group">
+<input type="text" id="eventLocation" placeholder="Location" required>
+</div>
+
+<div class="form-group">
+<textarea id="eventDescription" placeholder="Description"></textarea>
+</div>
+
+<div class="form-actions">
+<button type="button" class="btn btn-outline" id="cancelEventBtn">Cancel</button>
+<button type="submit" class="btn btn-primary">Save Event</button>
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<!-- Event Detail Modal -->
+
+<div id="detailModal" class="modal">
+
+<div class="modal-content">
+
+<div class="modal-header">
+<h2>Event Details</h2>
+<button class="close-btn" id="closeDetailModal">&times;</button>
+</div>
+
+<div id="eventDetailContent"></div>
+
+<div class="form-actions">
+
+<button class="btn btn-outline" id="closeDetailBtn">Close</button>
+
+<button class="btn btn-secondary" id="rsvpBtn">Join Event</button>
+
+<button class="btn btn-primary" id="editEventBtn">Edit</button>
+
+<button class="btn btn-danger" id="deleteEventBtn">Delete</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function handleLogout(){
+
+if(confirm("Logout?")){
+
+localStorage.removeItem("event_planner_session");
+localStorage.removeItem("currentUser");
+
+window.location.href="login.html";
+
+}
+
+}
+
+</script>
+
+<script src="app.js"></script>
+
+</body>
+</html>
